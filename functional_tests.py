@@ -20,18 +20,19 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', header_text)
 
         # The user is able to enter a new item directly
-        text_input = self.browser.find_element_by_id('id_new_item')
+        text_input = self.browser.find_element_by_id('new_item')
         self.assertEqual(
-                text_input.get_attribute('placeholder', 'Enter a to-do item')
+            text_input.get_attribute('placeholder'),
+            'Enter a to-do item'
         )
 
         # The user types "Buy a T-Rex"
-        text_input.sendkeys('Buy a T-Rex')
+        text_input.send_keys('Buy a T-Rex')
 
         # When the user presses "enter" they see the new todo item saved
         # 1: "Buy a T-Rex"
-        text_input.sendkeys(Keys.ENTER)
-        table = self.browser.find_element_by_id('id_list_table')
+        text_input.send_keys(Keys.ENTER)
+        table = self.browser.find_element_by_id('list_table')
         rows = table.find_elements_by_tag_name('tr')
 
         self.assertTrue(
