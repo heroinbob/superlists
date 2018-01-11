@@ -11,6 +11,16 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_todo_item(self, todo_text):
+        table = self.browser.find_element_by_id('list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(todo_text, [row.text for row in rows])
+
+    def create_todo_item(self, todo_text):
+        text_input = self.browser.find_element_by_id('new_item')
+        text_input.send_keys(todo_text)
+        text_input.send_keys(Keys.ENTER)
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         self.browser.get('http://localhost:8000')
 
@@ -26,24 +36,15 @@ class NewVisitorTest(unittest.TestCase):
             'Enter a to-do item'
         )
 
-        # The user types "Buy a T-Rex"
-        text_input.send_keys('Buy a T-Rex')
+        # Create a couple of Todos
+        first_todo_text = 'Buy a T-Rex'
+        second_todo_text = 'Take over the world'
 
-        # When the user presses "enter" they see the new todo item saved
-        # 1: "Buy a T-Rex"
-        text_input.send_keys(Keys.ENTER)
-        table = self.browser.find_element_by_id('list_table')
-        rows = table.find_elements_by_tag_name('tr')
+        self.create_todo_item(first_todo_text)
+        self.create_todo_item(second_todo_text)
 
-        self.assertIn('1: Buy a T-Rex', [row.text for row in rows])
-
-        # The user can still add items, and enters "Take over the world"
-        text_input = self.browser.find_element_by_id('new_item')
-        text_input.send_keys('Take over the world')
-        text_input.send_keys(Keys.ENTER)
-        table = self.browser.find_element_by_id('list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('2: Take over the world', [row.text for row in rows])
+        self.check_for_todo_item(first_todo_text)
+        self.check_for_todo_item(second_todo_text)
 
         # The page now shows both items
 
