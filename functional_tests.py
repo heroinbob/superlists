@@ -35,12 +35,15 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('list_table')
         rows = table.find_elements_by_tag_name('tr')
 
-        self.assertTrue(
-            any(row.text == '1: Buy a T-Rex' for row in rows)
-        )
+        self.assertIn('1: Buy a T-Rex', [row.text for row in rows])
 
         # The user can still add items, and enters "Take over the world"
-        self.fail('Finish The Test!')
+        text_input = self.browser.find_element_by_id('new_item')
+        text_input.send_keys('Take over the world')
+        text_input.send_keys(Keys.ENTER)
+        table = self.browser.find_element_by_id('list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('2: Take over the world', [row.text for row in rows])
 
         # The page now shows both items
 
